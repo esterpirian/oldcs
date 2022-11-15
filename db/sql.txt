@@ -1,0 +1,37 @@
+﻿sql
+
+table
+
+CREATE TABLE [dbo].[Turn] (
+    [Id]         INT           IDENTITY (1, 1) NOT NULL,
+    [ClientName] NVARCHAR (50) NULL,
+    [Status]     INT           NULL,
+    [DateAdd]    DATETIME      NULL,
+    PRIMARY KEY CLUSTERED ([Id] ASC)
+);
+
+CREATE PROCEDURE [dbo].[AddClient]
+	@name nvarchar (50)
+	
+AS
+	insert into Turn(ClientName,Status,DateAdd)values(@name,0,GETDATE())
+	
+
+RETURN 0
+CREATE PROCEDURE [dbo].[MoveTurn]
+	
+AS
+	update Turn set [Status]=
+	case
+	 when  Id=(select min(Id) from Turn where [status]=0) then 1
+	   when  Status=1 then 2
+	  else  Status
+	end
+RETURN 0
+CREATE PROCEDURE [dbo].[GetTurn]
+	@status int = null
+	
+AS
+	SELECT * from Turn where Status!=@status 
+	order by Id
+RETURN 0
